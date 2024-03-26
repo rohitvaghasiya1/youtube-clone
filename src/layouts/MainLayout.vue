@@ -6,7 +6,7 @@
           flat
           dense
           round
-          @click="miniState = !miniState"
+          @click="drawerClick"
           aria-label="Menu"
           icon="menu"
         />
@@ -71,8 +71,8 @@
       show-if-above
       :mini="!drawer || miniState"
       @click.capture="drawerClick"
-      :width="240"
-      :breakpoint="767"
+      :width="200"
+      :breakpoint="500"
     >
       <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
         <q-list padding>
@@ -136,7 +136,7 @@
 import { ref } from "vue";
 import { fabYoutube } from "@quasar/extras/fontawesome-v6";
 import SearchBox from "../components/system/SearchBox.vue";
-
+import { useQuasar } from "quasar";
 export default {
   name: "MainLayout",
   components: {
@@ -144,22 +144,18 @@ export default {
   },
   setup() {
     const miniState = ref(false);
-
+    const drawer = ref(false);
+    const $q = useQuasar();
     return {
-      drawer: ref(false),
+      drawer,
       miniState,
 
       drawerClick(e) {
-        // if in "mini" state and user
-        // click on drawer, we switch it to "normal" mode
-        if (miniState.value) {
-          miniState.value = false;
-
-          // notice we have registered an event with capture flag;
-          // we need to stop further propagation as this click is
-          // intended for switching drawer to "normal" mode only
-          e.stopPropagation();
+        miniState.value = !miniState.value;
+        if ($q.screen.lt.sm) {
+          drawer.value = !drawer.value;
         }
+        e.stopPropagation();
       },
       fabYoutube,
 
